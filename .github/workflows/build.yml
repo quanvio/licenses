@@ -1,0 +1,29 @@
+name: Build public JSON/CSV
+on:
+  push:
+    paths:
+      - "data/licenses.json"
+      - "tools/build.js"
+      - ".github/workflows/build.yml"
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: "20" }
+      - name: Build API files
+        run: |
+          node tools/build.js
+      - name: Commit & push
+        run: |
+          git config user.name "licenses-bot"
+          git config user.email "bot@quanvio.com"
+          git add -A
+          git commit -m "Build public JSON/CSV [skip ci]" || echo "No changes"
+          git push
