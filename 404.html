@@ -1,0 +1,22 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>Router</title>
+  <meta name="robots" content="noindex" />
+  <script>
+    const p = location.pathname.replace(/^\/+/, '');
+    const parts = p.split('/');
+    const at = parts.indexOf('license');
+    if (at >= 0 && parts[at + 1] && parts[at + 1].length === 24) {
+      const id = parts[at + 1];
+      location.replace(`/licenses/license/?id=${id}`);
+    } else {
+      document.addEventListener('DOMContentLoaded', () => {
+        document.body.textContent = 'Not found.';
+      });
+    }
+  </script>
+</head>
+<body></body>
+</html>
