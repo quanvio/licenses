@@ -1,0 +1,41 @@
+{
+  "updated": "2025-09-01T12:00:00Z",
+  "items": [
+    {
+      "LicenseId": "POSIFLEX000000000000000001",
+      "Company": "Posiflex",
+      "Active": true,
+      "Link": "https://posiflex.com/app"
+    },
+    {
+      "LicenseId": "POSIFLEX000000000000000002",
+      "Company": "Posiflex",
+      "Active": false,
+      "Link": ""
+    },
+    {
+      "LicenseId": "QUANVIO000000000000000001",
+      "Company": "Quanvio",
+      "Active": true,
+      "Link": "https://quanvio.com/service"
+    },
+    {
+      "LicenseId": "QUANVIO000000000000000002",
+      "Company": "Quanvio",
+      "Active": true,
+      "Link": "https://quanvio.com/dashboard"
+    },
+    {
+      "LicenseId": "OTHCO00000000000000000001",
+      "Company": "OtherCo",
+      "Active": false,
+      "Link": ""
+    },
+    {
+      "LicenseId": "OTHCO00000000000000000002",
+      "Company": "OtherCo",
+      "Active": true,
+      "Link": "https://otherco.example.com"
+    }
+  ]
+}
