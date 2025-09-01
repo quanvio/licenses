@@ -1,0 +1,61 @@
+name: Toggle License Active (Admin)
+
+on:
+  workflow_dispatch:
+    inputs:
+      license_id:
+        description: "Existing LicenseId to toggle"
+        required: true
+        type: string
+      active:
+        description: "Set Active to (true/false)"
+        required: true
+        default: "false"
+        type: choice
+        options: [ "true", "false" ]
+      link:
+        description: "Optional: new Link to set (required if setting Active=true and link empty)"
+        required: false
+        type: string
+
+permissions:
+  contents: write
+
+jobs:
+  toggle:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Toggle in JSON
+        run: |
+          node -e '
+            const fs=require("fs");
+            const id=process.env.ID.trim();
+            const active=(process.env.ACTIVE==="true");
+            const link=(process.env.LINK||"").trim();
+            const p="data/licenses.json";
+            if(!fs.existsSync(p)) { console.error("licenses.json missing"); process.exit(1); }
+            const j=JSON.parse(fs.readFileSync(p,"utf8"));
+            const i=(j.items||[]).findIndex(x=>x.LicenseId===id);
+            if(i<0){ console.error("ID not found: "+id); process.exit(1); }
+            if(active && !j.items[i].Link && !link){ console.error("Active=true requires a Link (existing was empty). Provide input link."); process.exit(1); }
+            if(link) j.items[i].Link=link;
+            j.items[i].Active=active;
+            j.updated=new Date().toISOString();
+            fs.writeFileSync(p, JSON.stringify(j,null,2)+"\n");
+            console.log("Toggled", id, "-> Active =", active);
+          ' \
+          || exit 1
+        env:
+          ID: ${{ github.event.inputs.license_id }}
+          ACTIVE: ${{ github.event.inputs.active }}
+          LINK: ${{ github.event.inputs.link }}
+
+      - name: Commit & push
+        run: |
+          git config user.name "quanvio-actions"
+          git config user.email "bot@quanvio.com"
+          git add -A
+          git commit -m "Toggle license: ${{ github.event.inputs.license_id }} Active=${{ github.event.inputs.active }} [skip ci]" || echo "No changes"
+          git push
