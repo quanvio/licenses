@@ -1,45 +1,9 @@
 <!doctype html>
 <html>
-<head>
-  <meta charset="utf-8" />
-  <title>License Redirect</title>
-  <meta name="robots" content="noindex" />
-  <script>
-    async function run() {
-      const params = new URLSearchParams(location.search);
-      let id = (params.get('id') || '').trim();
-
-      if (!id) {
-        // also support /license/<id>
-        const parts = location.pathname.split('/').filter(Boolean);
-        const ix = parts.indexOf('license');
-        if (ix >= 0 && parts[ix + 1]) id = parts[ix + 1].trim();
-      }
-
-      if (!id || id.length !== 24) {
-        document.body.textContent = 'Invalid or missing ID.';
-        return;
-      }
-
-      try {
-        const url = `../data/${encodeURIComponent(id)}.json`;
-        const resp = await fetch(url, { cache: 'no-store' });
-        if (!resp.ok) {
-          document.body.textContent = 'Not found or inactive.';
-          return;
-        }
-        const row = await resp.json();
-        if (row.Active === true && row.Link) {
-          location.href = row.Link;
-        } else {
-          document.body.textContent = 'Not found or inactive.';
-        }
-      } catch (e) {
-        document.body.textContent = 'Service unavailable.';
-      }
-    }
-    addEventListener('DOMContentLoaded', run);
-  </script>
-</head>
-<body>Checking license…</body>
+<head><meta charset="utf-8"><title>Quanvio Licenses</title></head>
+<body>
+  <h1>Quanvio License Checker</h1>
+  <p>Check: <code>/license/?id=&lt;24digit&gt;</code> or <code>/license/&lt;24digit&gt;</code></p>
+  <p>Example: <a href="./license/?id=0123456789ABCDEFGHIJKL">Check sample</a></p>
+</body>
 </html>
