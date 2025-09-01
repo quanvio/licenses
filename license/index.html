@@ -9,29 +9,27 @@
       const params = new URLSearchParams(location.search);
       let id = (params.get('id') || '').trim();
 
-      // Also support /license/<id>
+      // also support /license/<id>
       if (!id) {
         const parts = location.pathname.split('/').filter(Boolean);
         const ix = parts.indexOf('license');
         if (ix >= 0 && parts[ix + 1]) id = parts[ix + 1].trim();
       }
 
-      if (!id || id.length !== 24) {
+      // ✅ allow any length as long as it's present
+      if (!id) {
         document.body.textContent = 'Invalid or missing ID.';
         return;
       }
 
       try {
-        // Always load the single JSON file
         const resp = await fetch('../data/licenses.json', { cache: 'no-store' });
         if (!resp.ok) throw new Error('Failed to load license data');
         const data = await resp.json();
 
-        // Find the row matching the ID
         const item = (data.items || []).find(x => x.LicenseId === id);
 
         if (item && item.Active === true && item.Link) {
-          // Redirect to the Link if active
           location.href = item.Link;
         } else {
           document.body.textContent = 'Not found or inactive.';
