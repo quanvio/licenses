@@ -1,0 +1,12 @@
+{
+  "company": "Posiflex",
+  "count": 1,
+  "items": [
+    {
+      "LicenseId": "POSIFLEX000000000000000001",
+      "Company": "Posiflex",
+      "Active": true,
+      "Link": "https://posiflex.com/app"
+    }
+  ]
+}

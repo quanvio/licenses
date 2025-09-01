@@ -1,0 +1,12 @@
+{
+  "company": "OtherCo",
+  "count": 1,
+  "items": [
+    {
+      "LicenseId": "OTHCO00000000000000000002",
+      "Company": "OtherCo",
+      "Active": false,
+      "Link": ""
+    }
+  ]
+}

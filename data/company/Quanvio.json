@@ -1,0 +1,12 @@
+{
+  "company": "Quanvio",
+  "count": 1,
+  "items": [
+    {
+      "LicenseId": "QUANVIO000000000000000001",
+      "Company": "Quanvio",
+      "Active": true,
+      "Link": "https://quanvio.com/service"
+    }
+  ]
+}
