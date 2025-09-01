@@ -1,0 +1,69 @@
+name: Create License (Admin)
+
+on:
+  workflow_dispatch:
+    inputs:
+      company:
+        description: "Company name"
+        required: true
+        type: string
+      link:
+        description: "Target URL (required if Active=true)"
+        required: false
+        type: string
+      active:
+        description: "Active? (true/false)"
+        required: true
+        default: "true"
+        type: choice
+        options: [ "true", "false" ]
+      existing_id:
+        description: "Optional: set/override a specific ID (24+ any length allowed)"
+        required: false
+        type: string
+
+permissions:
+  contents: write   # needed to push changes
+
+jobs:
+  create:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Ensure data folder & file
+        run: |
+          mkdir -p data
+          if [ ! -f data/licenses.json ]; then
+            echo '{"updated":"", "items":[]}' > data/licenses.json
+          fi
+
+      - name: Add/Update license
+        id: gen
+        run: |
+          node tools/new-license.js \
+            "${{ github.event.inputs.company }}" \
+            "${{ github.event.inputs.link }}" \
+            "${{ github.event.inputs.active }}" \
+            "${{ github.event.inputs.existing_id }}" \
+            | tee /tmp/out.txt
+          # Extract printed ID (last "license_id=..." line)
+          ID=$(grep -E 'license_id=' /tmp/out.txt | tail -n1 | cut -d'=' -f2)
+          echo "LICENSE_ID=$ID" >> $GITHUB_ENV
+          echo "license_id=$ID" >> $GITHUB_OUTPUT
+
+      - name: Commit & push
+        run: |
+          git config user.name "quanvio-actions"
+          git config user.email "bot@quanvio.com"
+          git add -A
+          git commit -m "Add/Update license: $LICENSE_ID [skip ci]" || echo "No changes"
+          git push
+
+      - name: Print new License ID
+        run: |
+          echo "✅ License ID: $LICENSE_ID"
